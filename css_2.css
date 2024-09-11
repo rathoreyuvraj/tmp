@@ -1,0 +1,117 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    border: 2px solid black;
+    padding: 20px;
+    background-color: white;
+}
+
+/* Styling for the text rows */
+.text-row {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.text-row p {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Image layout */
+.top-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid black;
+}
+
+.bottom-boxes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+.bottom-box {
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container {
+    text-align: center;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.image-name {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+/* Buttons and radio buttons styling */
+.button-row, .radio-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button-row {
+    gap: 10px;
+}
+
+.radio-row {
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
+.radio-row label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.radio-row input {
+    margin-right: 5px;
+}
