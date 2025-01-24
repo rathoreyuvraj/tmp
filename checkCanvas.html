@@ -1,0 +1,11 @@
+function isCanvasEmpty() {
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  // Loop through the pixel data to check if any non-transparent pixel exists
+  for (let i = 0; i < data.data.length; i += 4) {
+    // Check if any pixel has non-zero RGBA values (not completely transparent)
+    if (data.data[i] !== 255 || data.data[i + 1] !== 255 || data.data[i + 2] !== 255 || data.data[i + 3] !== 0) {
+      return false; // Canvas is not empty
+    }
+  }
+  return true; // Canvas is empty
+}
