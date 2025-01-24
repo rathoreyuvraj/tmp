@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draw Rectangle and Dot on Image</title>
+  <style>
+    /* Global Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+
+    /* Container to center image and buttons */
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    /* Style for the canvas and image container */
+    #image-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    #image {
+      max-width: 1024px;
+      height: 1024px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 8px;
+      border: 2px solid rgba(0, 0, 0, 0.3); /* Optional border */
+    }
+
+    /* Style for buttons */
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .buttons button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .buttons button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Style for alert or instructions */
+    .instructions {
+      font-size: 16px;
+      color: #555;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="image-container">
+      <img src="your-image.jpg" id="image" alt="Image to Draw On">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="buttons">
+      <button id="drawDot">Draw Dot</button>
+      <button id="drawRectangle">Draw Rectangle</button>
+      <button id="clearCanvas">Clear Canvas</button>
+    </div>
+
+    <div class="instructions" id="instructions">
+      Click on a button to start drawing!
+    </div>
+  </div>
+
+  <script>
+    const image = document.getElementById('image');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const instructions = document.getElementById('instructions');
+
+    let startX, startY, isDrawing = false;
+    let drawRectangleMode = false;
+    let drawDotMode = false;
+
+    image.onload = () => {
+      // Set canvas size to match the image
+      canvas.width = image.width;
+      canvas.height = image.height;
+    };
+
+    // Event listener for mouse click to draw rectangle or dot
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      if (drawRectangleMode) {
+        // Start drawing rectangle
+        startX = mouseX;
+        startY = mouseY;
+        isDrawing = true;
+      } else if (drawDotMode) {
+        // Clear canvas before drawing a new dot
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        // Draw a single dot at the clicked location
+        drawDot(mouseX, mouseY);
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing || !drawRectangleMode) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const endX = e.clientX - rect.left;
+      const endY = e.clientY - rect.top;
+
+      // Clear the canvas and redraw the image, to prevent multiple rectangles overlapping
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      
+      // Draw the rectangle
+      ctx.beginPath();
+      ctx.rect(startX, startY, endX - startX, endY - startY);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      isDrawing = false;
+    });
+
+    canvas.addEventListener('mouseout', () => {
+      isDrawing = false;
+    });
+
+    // Button to enable "Draw Dot" mode
+    document.getElementById('drawDot').addEventListener('click', () => {
+      drawRectangleMode = false;  // Disable rectangle drawing
+      drawDotMode = true;  // Enable dot drawing mode
+
+      // Clear the canvas and redraw the image
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      instructions.textContent = "Click anywhere on the image to draw a single dot!";
+    });
+
+    // Button to enable "Draw Rectangle" mode
+    document.getElementById('drawRectangle').addEventListener('click', () => {
+      drawDotMode = false;  // Disable dot drawing mode
+      drawRectangleMode = true;  // Enable rectangle drawing mode
+
+      // Clear the canvas and redraw the image
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      instructions.textContent = "Click and drag to draw a rectangle!";
+    });
+
+    // Button to clear the canvas
+    document.getElementById('clearCanvas').addEventListener('click', () => {
+      drawRectangleMode = false;
+      drawDotMode = false;  // Disable dot drawing mode
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      instructions.textContent = "Canvas cleared! Choose an option to draw.";
+    });
+
+    // Function to draw a thick dot at a specific location
+    function drawDot(x, y) {
+      const dotRadius = 10; // Adjust dot size
+      ctx.beginPath();
+      ctx.arc(x, y, dotRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = 'blue';
+      ctx.fill();
+    }
+  </script>
+</body>
+</html>
